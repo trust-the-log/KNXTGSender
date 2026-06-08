@@ -1,4 +1,6 @@
 import asyncio
+import sys
+import os
 import threading
 import webbrowser
 import tkinter as tk
@@ -328,6 +330,10 @@ class KNXSendApp(tk.Tk):
         self.title("KNX Send")
         self.resizable(False, False)
         self.configure(bg=BG)
+        try:
+            self.iconbitmap(resource_path("knxsend.ico"))
+        except Exception:
+            pass
         self._build_ui()
         self._tick()
 
@@ -575,10 +581,11 @@ class KNXSendApp(tk.Tk):
             self.after(0, lambda: self._log(
                 f"OK  GA={ga_str}  {ip}:{port}", "ok"))
 
-    def _open_web(self):
-        webbrowser.open(f"http://{self.ip_var.get().strip()}")
-
-
+    def resource_path(relative_path):
+        if hasattr(sys, '_MEIPASS'):
+            return os.path.join(sys._MEIPASS, relative_path)
+        return os.path.join(os.path.dirname(__file__), relative_path)
+        
 if __name__ == "__main__":
     app = KNXSendApp()
     app.mainloop()
